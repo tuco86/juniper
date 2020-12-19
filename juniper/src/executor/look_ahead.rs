@@ -339,6 +339,9 @@ pub trait LookAheadMethods<'sel, S> {
     /// Get the (potentially aliased) name of the field represented by the current selection
     fn field_name(&self) -> &'sel str;
 
+    /// Get the inner name of the field.
+    fn inner_name(&self) -> &str;
+
     /// Get the the child selection for a given field
     /// If a child has an alias, it will only match if the alias matches `name`
     fn select_child(&self, name: &str) -> Option<&Self>;
@@ -375,6 +378,10 @@ impl<'a, S> LookAheadMethods<'a, S> for ConcreteLookAheadSelection<'a, S> {
         self.alias.unwrap_or(self.name)
     }
 
+    fn inner_name(&self) -> &str {
+        self.name
+    }
+
     fn select_child(&self, name: &str) -> Option<&Self> {
         self.children.iter().find(|c| c.field_name() == name)
     }
@@ -403,6 +410,10 @@ impl<'a, S> LookAheadMethods<'a, S> for ConcreteLookAheadSelection<'a, S> {
 impl<'a, S> LookAheadMethods<'a, S> for LookAheadSelection<'a, S> {
     fn field_name(&self) -> &'a str {
         self.alias.unwrap_or(self.name)
+    }
+
+    fn inner_name(&self) -> &str {
+        self.name
     }
 
     fn select_child(&self, name: &str) -> Option<&Self> {
